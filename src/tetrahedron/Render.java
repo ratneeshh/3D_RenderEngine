@@ -81,6 +81,16 @@ public class Render extends JPanel {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
+        addMouseWheelListener(e -> {
+            // Zoom in/out by 10% per wheel tick
+            if (e.getWheelRotation() < 0) {
+                zoomFactor *= 1.01; // Zoom in
+            } else {
+                zoomFactor *= 0.99; // Zoom out
+            }
+            repaint();
+        });
+
         // Draw triangles with transformations
         double heading = Math.toRadians(x);
         Matrix3 headingTransform = new Matrix3(new double[]{
