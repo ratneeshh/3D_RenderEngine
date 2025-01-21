@@ -1,4 +1,6 @@
-package tetrahedron;
+package pyramid;
+
+import pyramid.Render;
 
 import javax.swing.*;
 import java.awt.*;

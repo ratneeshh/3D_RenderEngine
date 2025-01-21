@@ -1,4 +1,4 @@
-package tetrahedron;
+package pyramid;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,26 +17,21 @@ public class Render extends JPanel {
     Render() {
         tris = new ArrayList<>();
 
-        tris.add(new Triangle
-                (new Vertex(100, 100, 100),
-                        new Vertex(-100, -100, 100),
-                        new Vertex(-100, 100, -100),
-                        Color.WHITE));
-        tris.add(new Triangle
-                (new Vertex(100, 100, 100),
-                        new Vertex(-100, -100, 100),
-                        new Vertex(100, -100, -100),
-                        Color.RED));
-        tris.add(new Triangle(
-                new Vertex(-100, 100, -100),
-                new Vertex(100, -100, -100),
-                new Vertex(100, 100, 100),
-                Color.GREEN));
-        tris.add(new Triangle
-                (new Vertex(-100, 100, -100),
-                        new Vertex(100, -100, -100),
-                        new Vertex(-100, -100, 100),
-                        Color.BLUE));
+        Vertex v1 = new Vertex(-100, 0, -100);  // Back left
+        Vertex v2 = new Vertex(100, 0, -100);   // Back right
+        Vertex v3 = new Vertex(100, 0, 100);    // Front right
+        Vertex v4 = new Vertex(-100, 0, 100);   // Front left
+        Vertex top = new Vertex(0, 150, 0);     // Top point
+
+        // Base triangles (making the square base) - modified order of vertices
+        tris.add(new Triangle(v1, v3, v2, Color.WHITE));  // First half of base - changed order
+        tris.add(new Triangle(v1, v4, v3, Color.WHITE));  // Second half of base - changed order
+
+// Side triangular faces
+        tris.add(new Triangle(v1, v2, top, Color.RED));    // Back face
+        tris.add(new Triangle(v2, v3, top, Color.GREEN));  // Right face
+        tris.add(new Triangle(v3, v4, top, Color.BLUE));   // Front face
+        tris.add(new Triangle(v4, v1, top, Color.YELLOW)); // Left face
     }
 
     @Override
@@ -93,26 +88,26 @@ public class Render extends JPanel {
 
         // Draw triangles with transformations
         double heading = Math.toRadians(x);
-        Matrix3 headingTransform = new Matrix3(new double[]{
+        pyramid.Matrix3 headingTransform = new pyramid.Matrix3(new double[]{
                 Math.cos(heading), 0, -Math.sin(heading),
                 0, 1, 0,
                 Math.sin(heading), 0, Math.cos(heading)
         });
 
         double pitch = Math.toRadians(y);
-        Matrix3 pitchTransform = new Matrix3(new double[]{
+        pyramid.Matrix3 pitchTransform = new pyramid.Matrix3(new double[]{
                 1, 0, 0,
                 0, Math.cos(pitch), Math.sin(pitch),
                 0, -Math.sin(pitch), Math.cos(pitch)
         });
 
-        Matrix3 zoomTransform = new Matrix3(new double[]{
+        pyramid.Matrix3 zoomTransform = new pyramid.Matrix3(new double[]{
                 zoomFactor, 0, 0,
                 0, zoomFactor, 0,
                 0, 0, zoomFactor
         });
 
-        Matrix3 transform = headingTransform.multiply(pitchTransform).multiply(zoomTransform);
+        pyramid.Matrix3 transform = headingTransform.multiply(pitchTransform).multiply(zoomTransform);
 
         for (Triangle t : tris) {
             Vertex v1 = transform.transform(t.v1);
@@ -143,7 +138,7 @@ public class Render extends JPanel {
 
                     if (V3 && V2 && V1) {
                         // Calculate depth before drawing
-                        double depth = (v1.z + v2.z + v3.z) / 3.0;  // Average depth of triangle
+                        double depth = (v1.z + v2.z + v3.z)/3;  // Average depth of triangle
                         int zIndex = y * img.getWidth() + x;
 
                         // Only draw if this point is closer than what's already there
