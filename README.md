@@ -1,7 +1,3 @@
-# 3D_RenderEngine
-
-
-
 # 3D Graphics Engine in Java
 
 A simple 3D graphics engine implemented in Java that renders basic 3D shapes using software rasterization.
